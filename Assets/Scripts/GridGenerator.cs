@@ -7,14 +7,20 @@ public class GridGenerator : MonoBehaviour {
     public GameObject tilePrefab;
     public int xBound;
     public int yBound;
+    public bool run;
     public bool savePrefab;
     public string fileName;
     private string filePath;
+    private GameObject grid;
 
     // Use this for initialization
     void Start () {
         filePath = "Assets/Resources/Prefabs/" + fileName + ".prefab";
-        CreateTiles();
+        if (run)
+        {
+            grid = new GameObject();
+            CreateTiles();
+        }
 	}
 	
 	// Update is called once per frame
@@ -37,7 +43,7 @@ public class GridGenerator : MonoBehaviour {
             for (int x = xBound * -1; x <= xBound; x++)
             {
                 GameObject tile = Instantiate(tilePrefab, new Vector3(x, y), Quaternion.identity) as GameObject;
-                tile.transform.parent = transform;
+                tile.transform.parent = grid.transform;
                 tileArray[x + xBound][y + yBound] = tile;
             }
         }
@@ -69,7 +75,7 @@ public class GridGenerator : MonoBehaviour {
 
         if (savePrefab)
         {
-            PrefabUtility.CreatePrefab(filePath, gameObject);
+            PrefabUtility.CreatePrefab(filePath, grid);
         }
     }
 }
