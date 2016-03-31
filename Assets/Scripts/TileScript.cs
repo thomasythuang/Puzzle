@@ -18,7 +18,7 @@ public class TileScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	    
-        if (Input.touchCount > 0)
+        if (Input.touchCount > 0 && levelManager.currentMoves > 0)
         {
             Vector3 wp = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
             if (GetComponent<Collider2D>().OverlapPoint(wp))
@@ -27,6 +27,7 @@ public class TileScript : MonoBehaviour {
                 if (!painted)
                 {
                     StartPainting();
+                    levelManager.currentMoves--;
                 }
             }
         }
@@ -34,7 +35,7 @@ public class TileScript : MonoBehaviour {
 
     private void StartPainting()
     {
-        Paint(Color.green);
+        PaintThisTile(Color.green);
         if (leftTile)
         {
             leftTile.GetComponent<TileScript>().PaintInDirection(levelManager.Left);
@@ -58,7 +59,7 @@ public class TileScript : MonoBehaviour {
     {
         if (!painted)
         {
-            Paint(Color.green);
+            PaintThisTile(Color.green);
             painted = true;
             if (direction == levelManager.Left && leftTile)
             {
@@ -79,9 +80,14 @@ public class TileScript : MonoBehaviour {
         }
     }
 
-    public void Paint(Color color)
+    public void PaintThisTile(Color color)
     {
         gameObject.GetComponent<Renderer>().material.color = color;
         painted = true;
+        levelManager.paintedTiles++;
+        if (levelManager.paintedTiles == levelManager.totalTiles)
+        {
+            Debug.Log("Completed Level!");
+        }
     }
 }
